@@ -1,0 +1,23 @@
+#!/bin/sh
+# gaze calibrate | start | stop | status | test
+# Camera commands run inside Terminal.app, because macOS gives camera access per app and
+# T3 Code / Claude cannot ask for it. Output is copied to $D/last_<cmd>.txt.
+D="${GAZE_READ_HOME:-$HOME/.claude/gaze-read}"
+SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+case "$1" in
+  calibrate|start|test)
+    # A terminal app (TERM_PROGRAM set) can ask macOS for camera access itself. A desktop app's
+    # shell (Claude app, T3 Code) usually cannot, so hand the command to Terminal.app.
+    if [ -z "$TERM_PROGRAM" ] && [ -z "$GAZE_IN_TERMINAL" ]; then
+      rm -f "$D/last_$1.txt"
+      osascript -e "tell application \"Terminal\" to do script \"GAZE_IN_TERMINAL=1 '$SELF' $1; echo; echo 'Done. You can close this window.'\"" \
+                -e 'tell application "Terminal" to activate' >/dev/null
+      echo "Opened Terminal.app to run '$1'. Output goes to $D/last_$1.txt"
+      exit 0
+    fi
+    "$D/venv/bin/python" "$(dirname "$SELF")/tracker.py" "$1" 2>&1 \
+      | grep -v -E '^(W0000|I0000|INFO:|WARNING: All log)' | tee "$D/last_$1.txt"
+    ;;
+  *)
+    exec "$D/venv/bin/python" "$(dirname "$SELF")/tracker.py" "$@" ;;
+esac

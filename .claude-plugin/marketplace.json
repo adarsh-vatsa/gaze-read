@@ -1,0 +1,14 @@
+{
+  "name": "gaze-read",
+  "description": "Webcam gaze tracking for Claude Code.",
+  "owner": {
+    "name": "Adarsh Vatsa"
+  },
+  "plugins": [
+    {
+      "name": "gaze-read",
+      "source": "./plugins/gaze-read",
+      "description": "Webcam gaze tracking that tells Claude which parts of its last reply you actually read."
+    }
+  ]
+}

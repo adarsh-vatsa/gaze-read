@@ -1,0 +1,8 @@
+{
+  "name": "gaze-read",
+  "version": "0.1.0",
+  "description": "Webcam gaze tracking that tells Claude which parts of its last reply you actually read.",
+  "author": { "name": "Adarsh Vatsa" },
+  "license": "MIT",
+  "keywords": ["gaze", "eye-tracking", "webcam", "hooks", "macos"]
+}
